@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>ClipBoard.js使用：修改HTML</title>
+ <meta charset="utf-8">
+
+</head>
+<body>
+
+	
+	<h1>
+	    页面加载时内容已自动复制到剪贴板。
+	</h1>
+	<p id="message">
+	    这段文本将被复制到剪贴板。
+	</p>
+	<p>
+	    <button id="copyButton">手动复制</button>
+	</p>
+
+	<script type="text/javascript">
+	 
+	document.getElementById('copyButton').addEventListener('click', () =>{
+	            // 获取要复制的文本内容
+	            const textToCopy = document.getElementById('message').innerText;
+	
+	            // 尝试使用 Clipboard API
+	            if (navigator.clipboard) {
+	                navigator.clipboard.writeText(textToCopy).then(() => {
+	                    console.log('文本已成功复制到剪贴板！');
+	                    alert('文本已成功复制到剪贴板！');
+						// if (confirm("你确定要关闭这个窗口吗？")) {
+						//     window.close();
+						// }
+						 window.close();
+	                }).catch(err => {
+	                    console.error('复制失败: ', err);
+	                });
+	            } else {
+	                // 回退到旧方法（需要用户交互）
+	                const textArea = document.createElement('textarea');
+	                textArea.value = textToCopy;
+	                document.body.appendChild(textArea);
+	                textArea.focus();
+	                textArea.select();
+	
+	                try {
+	                    const successful = document.execCommand('copy');
+	                    const msg = successful ? 'successful' : 'unsuccessful';
+	                    console.log('回退方法复制命令是 ' + msg);
+	                    alert('文本' + (successful ? '成功' : '未成功') + '复制到剪贴板！');
+	                } catch (err) {
+	                    console.error('回退方法复制失败: ', err);
+	                }
+	
+	                document.body.removeChild(textArea);
+	            }
+	        });
+	
+	        // 如果需要在页面加载时自动执行，可以模拟点击按钮
+	        document.addEventListener('DOMContentLoaded', (event) => {
+	            document.getElementById('copyButton').click();
+	        });
+	</script>
+
+</body>
+</html>
